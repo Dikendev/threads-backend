@@ -1,18 +1,86 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
+import { PrismaService } from 'src/prisma.service';
+import { Comment, Prisma, User } from '@prisma/client';
 
 @Injectable()
 export class CommentsService {
-  create(createCommentDto: CreateCommentDto) {
-    return 'This action adds a new comment';
+  constructor(private prisma: PrismaService) {}
+
+  async create(commentDto: CreateCommentDto): Promise<CreateCommentDto> {
+    const createdComment = this.prisma.comment.create({
+      data: {
+        userId: commentDto.userId,
+        text: commentDto.text,
+        parentId: commentDto?.parentId,
+        likes: 0,
+      },
+    });
+
+    return createdComment;
   }
 
-  findAll() {
-    return `This action returns all comments`;
+  async getCommentsByUser(id: string): Promise<User> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: id },
+      include: {
+        comments: { include: { parent: { include: { user: true } } } },
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException(`Comments by user id ${id} does not exist.`);
+    }
+
+    return user;
   }
 
-  findOne(id: number) {
+  async getTopLevelComments(): Promise<Comment[]> {
+    const comment = await this.prisma.comment.findMany({
+      where: { parentId: null },
+    });
+
+    if (!comment) {
+      throw new NotFoundException(`Top level comments does not exist.`);
+    }
+
+    return comment;
+  }
+
+  async getCommentsByParentId(parentId: string): Promise<Comment[]> {
+    const comment = await this.prisma.comment.findMany({
+      where: { parentId: parentId },
+      include: { parent: { include: { user: true } }, user: true },
+    });
+
+    if (!comment.length) {
+      throw new NotFoundException(
+        `Comments by parent id ${parentId} does not exist.`,
+      );
+    }
+
+    return comment;
+  }
+
+  async comments(params: {
+    skip?: number;
+    take?: number;
+    cursor?: Prisma.CommentWhereUniqueInput;
+    where?: Prisma.CommentWhereInput;
+    orderBy?: Prisma.CommentOrderByWithRelationInput;
+  }): Promise<Comment[]> {
+    const { skip, take, cursor, where, orderBy } = params;
+    return this.prisma.comment.findMany({
+      skip,
+      take,
+      cursor,
+      where,
+      orderBy,
+    });
+  }
+
+  getOne(id: number) {
     return `This action returns a #${id} comment`;
   }
 
