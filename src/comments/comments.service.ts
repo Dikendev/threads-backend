@@ -1,15 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from '../prisma.service';
 import { Comment, Prisma, User } from '@prisma/client';
+import { ResponseCommentDto } from './dto/response-comment.dto';
 
 @Injectable()
 export class CommentsService {
   constructor(private prisma: PrismaService) {}
 
-  async create(commentDto: CreateCommentDto): Promise<CreateCommentDto> {
-    const createdComment = this.prisma.comment.create({
+  async create(commentDto: CreateCommentDto): Promise<ResponseCommentDto> {
+    const createdComment = await this.prisma.comment.create({
       data: {
         userId: commentDto.userId,
         text: commentDto.text,
