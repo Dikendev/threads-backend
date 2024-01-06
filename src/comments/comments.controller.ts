@@ -12,6 +12,7 @@ import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ResponseCommentDto } from './dto/response-comment.dto';
 
 @ApiTags('comment')
 @Controller('comments')
@@ -20,8 +21,8 @@ export class CommentsController {
 
   @Post()
   @ApiOperation({ summary: 'Create comments' })
-  create(@Body() createCommentDto: CreateCommentDto) {
-    return this.commentsService.create(createCommentDto);
+  create(@Body() body: CreateCommentDto): Promise<ResponseCommentDto> {
+    return this.commentsService.create(body);
   }
 
   @Get('user/:id')
