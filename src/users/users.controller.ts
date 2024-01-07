@@ -24,13 +24,13 @@ export class UsersController {
   }
 
   @Get()
-  users(): Promise<UserModel[]> {
-    return this.usersService.users({});
+  getUsers(): Promise<UserModel[]> {
+    return this.usersService.getUsers({});
   }
 
   @Get(':id')
-  getOne(@Param('id') id: string) {
-    return this.usersService.getOne(+id);
+  getUser(@Param('id') id: string) {
+    return this.usersService.getUser(+id);
   }
 
   @Patch(':id')
