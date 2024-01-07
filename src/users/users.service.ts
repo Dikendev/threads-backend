@@ -14,7 +14,7 @@ export class UsersService {
     });
   }
 
-  async users(params: {
+  async getUsers(params: {
     skip?: number;
     take?: number;
     cursor?: Prisma.UserWhereUniqueInput;
@@ -31,7 +31,7 @@ export class UsersService {
     });
   }
 
-  async getOne(id: number) {
+  async getUser(id: number) {
     return `This action returns a #${id} user`;
   }
 
