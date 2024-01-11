@@ -8,7 +8,10 @@ describe('CommentsController', () => {
   let controller: CommentsController;
   let prisma: PrismaService;
 
-  const text = 'Loren Ipsum Text';
+  const data: CreateCommentDto = {
+    text: 'Loren Ipsum Text',
+    userId: '111-222-333',
+  };
   const idMock = '111-222-333';
 
   beforeEach(async () => {
@@ -46,7 +49,6 @@ describe('CommentsController', () => {
   });
 
   it('should create a comment with success', async () => {
-    const data: CreateCommentDto = { text, userId: 'mocked-user-id' };
     const comment = await controller.create(data);
 
     expect(comment.id).toBeDefined();
