@@ -6,15 +6,18 @@ import {
   Patch,
   Param,
   Delete,
+  UseFilters,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User as UserModel } from '@prisma/client';
 import { ApiTags } from '@nestjs/swagger';
+import { HttpExceptionFilter } from '../http-exception/http-exception.filter';
 
 @ApiTags('user')
 @Controller('users')
+@UseFilters(HttpExceptionFilter)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -30,7 +33,7 @@ export class UsersController {
 
   @Get(':id')
   getUser(@Param('id') id: string) {
-    return this.usersService.getUser(+id);
+    return this.usersService.getUser(id);
   }
 
   @Patch(':id')
@@ -38,8 +41,8 @@ export class UsersController {
     return this.usersService.update(+id, updateUserDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  @Delete(':param')
+  deleteUser(@Param('param') param: string) {
+    return this.usersService.deleteUser(param);
   }
 }
