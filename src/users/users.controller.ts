@@ -13,11 +13,11 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User as UserModel } from '@prisma/client';
 import { ApiTags } from '@nestjs/swagger';
-import { HttpExceptionFilter } from '../prisma-exception/prisma-exception.filter';
+import { PrismaExceptionFilter } from '../prisma-exception/prisma-exception.filter';
 
 @ApiTags('user')
 @Controller('users')
-@UseFilters(HttpExceptionFilter)
+@UseFilters(PrismaExceptionFilter)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
