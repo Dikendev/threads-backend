@@ -10,6 +10,16 @@ POST  http://localhost:3000/users HTTP/1.1
 Content-Type: application/json
 
 {   
+  "name": "diego",
+  "email":"diego@gmail.com"
+}
+
+###
+
+POST  http://localhost:3000/users HTTP/1.1
+Content-Type: application/json
+
+{   
   "name": "",
   "email": ""
 }
