@@ -10,11 +10,24 @@ export class UsersService {
   constructor(private prisma: PrismaService) {}
 
   async create(data: CreateUserDto): Promise<ResponseUserDto> {
-    const user = await this.prisma.user.create({
-      data,
-    });
+    try {
+      const user = await this.prisma.user.create({
+        data,
+      });
 
-    return user;
+      return user;
+    } catch (error) {
+      console.log('PrismaClientKnownRequestError');
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        console.log('code ', error.code);
+        throw new Prisma.PrismaClientKnownRequestError(error?.message, {
+          code: error.code,
+          clientVersion: error?.clientVersion,
+          meta: error?.meta,
+          batchRequestIdx: error?.batchRequestIdx,
+        });
+      }
+    }
   }
 
   async getUsers(params: {
