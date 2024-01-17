@@ -1,0 +1,6 @@
+###
+
+GET http://localhost:3000/logger/info HTTP/1.1
+
+###
+GET http://localhost:3000/logger/error HTTP/1.1
