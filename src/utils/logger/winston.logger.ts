@@ -1,33 +1,33 @@
 import { createLogger, format, transports } from 'winston';
 
-// custom log display format
-const customFormat = format.printf(({ timestamp, level, stack, message }) => {
-  return `${timestamp} - [${level.toUpperCase().padEnd(7)}] - ${
-    stack || message
-  }`;
-});
+const customFormat = format.printf(
+  ({ timestamp, level, context, stack, message, trace }) => {
+    return `${timestamp} - [${level.toUpperCase()}] - ${context} - ${
+      stack || message
+    } ${trace ? trace : ''}`;
+  },
+);
 
 const options = {
   file: {
-    filename: 'error.log',
-    level: 'error',
+    filename: 'logging.log',
+    level: 'debug',
   },
   console: {
     level: 'silly',
   },
 };
 
-// for development environment
 const devLogger = {
   format: format.combine(
     format.timestamp(),
+    format.colorize({ message: true }),
     format.errors({ stack: true }),
     customFormat,
   ),
   transports: [new transports.Console(options.console)],
 };
 
-// for production environment
 const prodLogger = {
   format: format.combine(
     format.timestamp(),
@@ -43,7 +43,6 @@ const prodLogger = {
   ],
 };
 
-// export log instance based on the current environment
 const instanceLogger =
   process.env.NODE_ENV === 'production' ? prodLogger : devLogger;
 
