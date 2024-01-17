@@ -14,7 +14,8 @@ const options = {
     level: 'debug',
   },
   console: {
-    level: 'silly',
+    level: 'debug',
+    handleExceptions: true,
   },
 };
 
