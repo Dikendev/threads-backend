@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger, LoggerService } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '../prisma.service';
@@ -7,7 +7,11 @@ import { ResponseUserDto } from './dto/response-user.dto';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  SERVICE: string = UsersService.name;
+  constructor(
+    private prisma: PrismaService,
+    @Inject(Logger) private readonly logger: LoggerService,
+  ) {}
 
   async create(data: CreateUserDto): Promise<ResponseUserDto> {
     try {
@@ -37,6 +41,7 @@ export class UsersService {
     where?: Prisma.UserWhereInput;
     orderBy?: Prisma.UserOrderByWithRelationInput;
   }): Promise<User[]> {
+    this.logger.log('Get All users', this.SERVICE);
     const { skip, take, cursor, where, orderBy } = params;
     return this.prisma.user.findMany({
       skip,
